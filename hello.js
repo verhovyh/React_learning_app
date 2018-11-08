@@ -31,15 +31,15 @@ function tick() {
 class My_Clock extends Component {
 
     constructor(props) {
-        super();
+        super(props);
         this.state = {
-            time: new Date()
+            date: new Date()
         }
     }
 
 
     render() {
-        const element = (<div>It's {this.state.time.toLocaleTimeString()} o'clock </div>);
+        const element = (<div>It's {this.state.date.toLocaleTimeString()} o'clock </div>);
         return element;
     }
 
@@ -49,18 +49,29 @@ class My_Clock extends Component {
 
     update = () => {
         this.setState({
-            time: new Date()
+            date: new Date()
         })
     }
 
+}
 
+function Welcome(props) {
+    const element = <div>Hello, {props.name}!</div>
+    return element
 }
 
 
 class App extends Component {
 
     render() {
-        return <h1><Hello/><World who={"fff"}/> <My_Clock/></h1>
+        return (
+            <div>
+                <Hello/>
+                <World who={"fff"}/>
+                <My_Clock/>
+                <Welcome name={"Jane"}/>
+            </div>)
+
 
     }
 }
