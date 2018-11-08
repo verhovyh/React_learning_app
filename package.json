@@ -1,0 +1,8 @@
+{
+  "name": "React_HelloWorld",
+  "version": "1.0.0",
+  "dependencies": {
+    "react": "latest",
+    "prop-types": "latest"
+  }
+}
