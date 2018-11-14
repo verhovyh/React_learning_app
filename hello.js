@@ -125,12 +125,12 @@ function Blog(props) {
     )
 
     const content =
-    props.posts.map((post) =>
-        <div key={post.id}>
-            <h3>{post.title}</h3>
-            <p>{post.content}</p>
-        </div>
-    );
+        props.posts.map((post) =>
+            <div key={post.id}>
+                <h3>{post.title}</h3>
+                <p>{post.content}</p>
+            </div>
+        );
 
     return (
         <div>{sidebar}
@@ -141,28 +141,30 @@ function Blog(props) {
 }
 
 
-class NameForm extends Component{
-    constructor(props){
+class NameForm extends Component {
+    constructor(props) {
         super(props)
-        this.state = ({value : ''});
+        this.state = ({value: ''});
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(event){
-        this.setState({value : event.target.value})
+    handleChange(event) {
+        this.setState({value: event.target.value})
     }
-    handleSubmit(event){
+
+    handleSubmit(event) {
         alert("A name was submitted: " + this.state.value);
         event.preventDefault();
     }
-    render(){
-        return(
+
+    render() {
+        return (
             <form onSubmit={this.handleSubmit}>
                 <label>
                     Name:
-                <input type="text" value={this.state.value} onChange={this.handleChange} />
+                    <input type="text" value={this.state.value} onChange={this.handleChange}/>
                 </label>
                 <br/>
                 <label>
@@ -174,16 +176,139 @@ class NameForm extends Component{
 }
 
 
+class SelectComponent extends Component {
+    constructor(props) {
+        super(props)
+        this.state = {value: ''}
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
 
 
+    }
+
+    handleChange(event) {
+        this.setState({value: event.target.value});
+    }
+
+    handleSubmit(event) {
+        alert("Value has beed submitted: " + this.state.value);
+        event.preventDefault();
+    }
+
+    render() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <select value={this.state.value} onChange={this.handleChange}>
+                    <option value="grapefruit">Grapefruit</option>
+                    <option value="lime">Lime</option>
+                    <option value="coconut">Coconut</option>
+                    <option value="mango">Mango</option>
+                </select>
+                <input type='submit' value="Submit"/>
+            </form>
+        )
+    }
+
+}
+
+// Boiling
+function BoilingVerdict(props) {
+    if (props.temp >= 100) return <p> Is boiling!</p>
+    else return <p>Not boiling!</p>
+}
+
+function toCelsius(fahrenheit) {
+    return (fahrenheit - 32) * 5 / 9;
+}
+
+function toFahrenheit(celsius) {
+    return (celsius * 9 / 5) + 32;
+}
+
+function tryConvert(temperature, convert) {
+    const input = parseFloat(temperature);
+    if (Number.isNaN(input)) {
+        return '';
+    }
+    const output = convert(input);
+    const rounded = Math.round(output * 1000) / 1000;
+    return rounded.toString();
+}
+
+class TemperatureInput extends Component {
+
+    constructor(props) {
+        super(props)
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    handleChange(e) {
+        this.props.onTemperatureChange(e.target.value)
+    }
+
+
+    render() {
+        const units = this.props.units == 'c' ? "Celsius" : "Fahrenheit"
+        const temperature = this.props.temperature;
+        return (
+            <fieldset>
+                <legend>Enter temperature in {units}:</legend>
+                <input onChange={this.handleChange} value={temperature}/>
+            </fieldset>
+        )
+    }
+}
+
+class TemperatureCalculator extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            tempValue: '',
+            units: 'c'
+        };
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+    }
+
+
+    handleCelsiusChange(temperature) {
+        this.setState({
+            tempValue: temperature,
+            units: 'c'
+        });
+        //alert("changed!");
+    }
+
+    handleFahrenheitChange(temperature) {
+        this.setState({
+            tempValue: temperature,
+            units: 'f'
+        });
+    }
+
+    render() {
+        const scale = this.state.units;
+        const temperature = this.state.tempValue;
+        const celsius = scale === 'f' ? tryConvert(temperature, toCelsius) : temperature;
+        const fahrenheit = scale === 'c' ? tryConvert(temperature, toFahrenheit) : temperature;
+
+        return (<div>
+                    <TemperatureInput units="c" temperature={celsius} onTemperatureChange={this.handleCelsiusChange}/>
+                    <TemperatureInput units="f" temperature={fahrenheit} onTemperatureChange={this.handleFahrenheitChange}/>
+                    <BoilingVerdict temp={celsius}/>
+                </div>)
+    }
+}
+// boiling end
 
 class App extends Component {
 
     render() {
-    const posts = [
-        {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
-        {id: 2, title: 'Installation', content: 'You can install React from npm.'}
-    ];
+        const posts = [
+            {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
+            {id: 2, title: 'Installation', content: 'You can install React from npm.'}
+        ];
         return (
             <div>
                 <Hello/>
@@ -194,6 +319,8 @@ class App extends Component {
                 <NumberList numbers={[1, 2, 3]}/>
                 <Blog posts={posts}/>
                 <NameForm/>
+                <SelectComponent/>
+                <TemperatureCalculator/>
             </div>)
 
 
